@@ -16,7 +16,7 @@ stages {
         }
         stage('Terraform Plan') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws',  secretKeyVariable: 'AWS_ACCESS_SECRET_KEY']]) 
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws',  secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) 
                 {
                 sh 'terraform plan'
                 }
@@ -24,12 +24,11 @@ stages {
             }
         stage('Terraform Apply') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws', secretKeyVariable: 'AWS_ACCESS_SECRET_KEY']]) 
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACESS_KEY_ID', credentialsId: 'aws', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) 
                 {
                 
                 sh 'terraform apply --auto-approve'
                 }
-            }  
-        }
+            }
     }
- }
+}
