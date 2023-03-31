@@ -7,7 +7,7 @@ pipeline {
         stage('terraform init') {
            steps {
               withCredentials([aws(accessKeyVariable:'AWS_ACCESS_KEY_ID', credentialsId: 'aws', secretKeyVarible: 'AWS_SECRET_ACCESS_KEY')]) {
-              sh 'terraform init '
+              sh 'terraform init -upgrade'
               }
            } 
         }
