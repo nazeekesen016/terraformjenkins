@@ -67,6 +67,6 @@ variable "namesg" {
 }
 
 variable "env" {
-  default     = ""
+  default     = "dev"
   description = "Name of Environment"
 }
