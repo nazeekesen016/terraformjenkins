@@ -51,12 +51,12 @@ variable "vpc-cidr-block" {
 
 variable "name" {
   type        = string
-  default     = ""
+  default     = "tf"
   description = "Name of Virtual Private Cloud"
 }
 
 variable "vpc_id" {
-  default     = ""
+  default     = "tf"
   description = "Identification of VPC"
 }
 
