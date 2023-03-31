@@ -1,35 +1,48 @@
 pipeline {
     agent any
     tools {
-        terraform 'terraform'
+       terraform 'terraform'
+    }
+    stages {
+        stage('terraform init') {
+           steps {
+              withCredentials([aws(accessKeyVariable:'AWS_ACCESS_KEY_ID', credentialsId: 'aws', secretKeyVarible: 'AWS_SECRET_ACCESS_KEY')]) {
+              sh 'terraform init '
+              }
+           } 
         }
-stages {
-        stage('Git Checkout') {
-            steps {
-                git branch: 'main', credentialsId: 'forgit', url: 'https://github.com/nazeekesen016/terraformjenkins'
-            }
+        stage('terraform plan') {
+           steps {
+              withCredentials([aws(accessKeyVariable:'AWS_ACCESS_KEY_ID', credentialsId: 'aws', secretKeyVarible: 'AWS_SECRET_ACCESS_KEY')]) {
+              sh "terraform plan"           
+              }
+           }
         }
-        stage('Terraform Init') {
-            steps {
-                sh 'terraform init'
-            }
+        stage('terraform apply') {
+           steps {
+              withCredentials([aws(accessKeyVariable:'AWS_ACCESS_KEY_ID', credentialsId: 'aws', secretKeyVarible: 'AWS_SECRET_ACCESS_KEY')]) {
+              sh "terraform apply --auto-approve"           
+              }
+           }
         }
-        stage('Terraform Plan') {
-            steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: 'aws',  secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) 
-                {
-                sh 'terraform plan'
+        stage('input value') {
+            input{
+                message "Who are you?"
+                ok "Build"
+                parameters {
+                    string(name: 'Name', defaultValue: 'Nuriza', description: 'To destroy terraform you need to specify your name')
                 }
             }
-            }
-        stage('Terraform Apply') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACESS_KEY_ID', credentialsId: 'aws', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']]) 
-                {
-                
-                sh 'terraform apply --auto-approve'
-                }
+                echo "Destroy terraform , destroyed by $Name"
             }
+        }
+        stage('terraform destroy') {
+           steps {
+              withCredentials([aws(accessKeyVariable:'AWS_ACCESS_KEY_ID', credentialsId: 'vpcterraform', secretKeyVarible: 'AWS_SECRET_ACCESS_KEY')]) {
+              sh "terraform destroy --auto-approve"           
+              }
+           }
         }
     }
 }
